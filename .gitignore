@@ -1,6 +1,4 @@
 .idea
-js/package-lock.json
-js/node_modules
-utils/package-lock.json
-utils/node_modules
+package-lock.json
+node_modules
 dist
