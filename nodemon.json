@@ -1,0 +1,6 @@
+{
+  "ignore": ["static", ".git", "node_modules"],
+  "watch": ["src"],
+  "exec": "ts-node src",
+  "ext": "ts"
+}

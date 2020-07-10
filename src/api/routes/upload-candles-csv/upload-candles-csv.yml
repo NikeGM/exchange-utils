@@ -1,0 +1,35 @@
+paths:
+  /api/upload-candles-csv:
+    post:
+      summary: Uploads a file.
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: upfile
+          type: file
+          description: The file to upload.
+
+        - in: query
+          name: code
+          type: string
+          required: false
+          description: candles code
+
+        - in: query
+          name: name
+          type: string
+          required: false
+          description: candles name
+
+        - in: query
+          name: period
+          type: string
+          required: false
+          description: candles period
+
+        - in: query
+          name: source
+          type: string
+          required: false
+          description: file source

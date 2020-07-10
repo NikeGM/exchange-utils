@@ -1,0 +1,40 @@
+version: "2"
+networks:
+  exchange:
+    external: true
+
+services:
+  api:
+    build: .docker/backend
+    restart: on-failure
+    container_name: api
+    hostname: api
+    entrypoint: /root/entrypoint.sh
+    #command: some params to entrypoint.sh
+    env_file:
+      - ./.env
+    volumes:
+      - ".:/src"
+    ports:
+      - "8000:8000"
+    networks:
+      - exchange
+    depends_on:
+      - postgres
+  postgres:
+    build: .docker/postgres
+    container_name: "postgres"
+    hostname: postgres
+    restart: always
+    env_file:
+      - ./.env
+    expose:
+      - '5432'
+    volumes:
+      - postgres-data:/data/postgres
+    ports:
+      - 54321:5432
+    networks:
+      - exchange
+volumes:
+  postgres-data:

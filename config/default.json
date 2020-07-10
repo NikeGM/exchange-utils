@@ -1,0 +1,14 @@
+{
+  "db": {
+    "postgres": {
+      "host": "localhost",
+      "user": "exchange",
+      "database": "exchange",
+      "password": "exchange",
+      "port": 54321
+    }
+  },
+  "api": {
+    "port": 8000
+  }
+}

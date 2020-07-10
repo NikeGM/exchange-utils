@@ -1,0 +1,47 @@
+paths:
+  /api/order-size:
+    get:
+      summary: Returns a calculated order size.
+      description: Returns a calculated order size.
+      parameters:
+        - in: query
+          name: capital
+          type: number
+          required: true
+          description: your capital
+
+        - in: query
+          name: defeatRate
+          type: number
+          required: false
+          description: defeat rate of capital, default equals 0.7
+
+        - in: query
+          name: stopLoss
+          type: number
+          required: true
+          description: stopLoss price
+
+        - in: query
+          name: lotSize
+          type: number
+          required: true
+          description: insturment lot size
+
+        - in: query
+          name: maxLossCount
+          type: number
+          required: false
+          description: max loss count. Default equals 10.
+
+        - in: query
+          name: price
+          type: number
+          required: false
+          description: position open price
+
+      responses:
+        '200':
+          description: order sum, order size
+          content:
+            application/json:

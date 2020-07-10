@@ -1,0 +1,43 @@
+paths:
+  /api/average-candle-size:
+    get:
+      summary: Returns a average candle size.
+      description: Returns a average candle size.
+      parameters:
+      - in: query
+        name: code
+        type: string
+        required: false
+        description: candles code
+
+      - in: query
+        name: name
+        type: string
+        required: false
+        description: candles name
+
+      - in: query
+        name: period
+        type: string
+        required: false
+        description: candles period
+
+      - in: query
+        name: from
+        type: string
+        required: false
+        description: candles interval start in milliseconds
+
+      - in: query
+        name: to
+        type: string
+        required: false
+        description: candles interval end in milliseconds
+
+      responses:
+        '200':
+          description: average candle size
+          content:
+            application/json:
+              schema:
+                type: number

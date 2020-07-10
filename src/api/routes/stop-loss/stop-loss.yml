@@ -1,0 +1,30 @@
+paths:
+  /api/stop-size:
+    get:
+      summary: Returns a calculated stop size.
+      description: Returns a calculated stop size.
+      parameters:
+        - in: query
+          name: averageCandleSize
+          type: number
+          required: true
+          description: average candle size
+
+        - in: query
+          name: turnPrice
+          type: number
+          required: true
+          description: candels after turn
+
+
+        - in: query
+          name: openPrice
+          type: number
+          required: true
+          description: candels after turn
+
+      responses:
+        '200':
+          description: stop size
+          content:
+            application/json:
