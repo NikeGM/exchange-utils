@@ -16,6 +16,7 @@ export class MovingAverageFactory implements IFactory<MovingAverageParams, Movin
 	private readonly _name?: string;
 	private readonly _code: string;
 	private readonly _candles: Candle[];
+	private readonly _signature: string
 
 	constructor(candles: Candle[], params: factoryParams) {
 		const { period, name, code } = params;
@@ -23,6 +24,7 @@ export class MovingAverageFactory implements IFactory<MovingAverageParams, Movin
 		this._name = name;
 		this._code = code;
 		this._candles = candles;
+		this._signature = 'ma'
 	}
 
 	public calculate(params: MovingAverageParams): MovingAverageIndicator {
@@ -40,6 +42,10 @@ export class MovingAverageFactory implements IFactory<MovingAverageParams, Movin
 
 	get candles(): Candle[] {
 		return this._candles;
+	}
+
+	get signature(): string {
+		return `${this._signature}__${this._code}__${this._period.symbol}`
 	}
 
 	private _executor(

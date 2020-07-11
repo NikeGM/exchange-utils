@@ -28,29 +28,23 @@ export const analyzeWinSeries = async (candles, candlesParams: factoryParams) =>
 		// average: [80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90 , 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],
 		field: Object.values(Field),
 	}
-	const allSeries = {
-		ma: {},
-		ema: {}
-	};
-
+	const result = [];
 	for (let field of maParamsList.field) {
 		for (let average of maParamsList.average) {
-			const paramsIndicator = { average, field }
-			const key = `${field}__${average}__${candlesParams.period.symbol}`;
-			console.log('Start calculate', key)
-			const maSeries = await calculateWinSeriesByFactoryAndIndicator(factories.ma, paramsIndicator);
-			const emaSeries = await calculateWinSeriesByFactoryAndIndicator(factories.ema, paramsIndicator);
-			allSeries.ma[key] = {
-				series: maSeries,
-				positionsCount: calculatePositionsCount(maSeries, candles)
-			};
-			allSeries.ema[key] = {
-				series: emaSeries,
-				positionsCount: calculatePositionsCount(emaSeries, candles)
-			};
+			for (let factory of [factories.ma, factories.ema]) {
+				const paramsIndicator = { average, field }
+				const key = `${field}__${average}__${candlesParams.period.symbol}`;
+				console.log('Start calculate', key)
+				const winSeries = await calculateWinSeriesByFactoryAndIndicator(factory, paramsIndicator);
+				const analyzed = calculatePositionsCount(winSeries, candles);
+				analyzed['signature'] = {
+					field, average, f: factory.signature
+				}
+				result.push(analyzed)
+			}
 		}
 	}
-	return allSeries;
+	return result;
 }
 
 const calculatePositionsCount = (series, candles) => {
@@ -64,13 +58,13 @@ const calculatePositionsCount = (series, candles) => {
 	return { win, loose, winRate, maxLoss, positionPerDay }
 }
 
-export const calculateTwoLineSeries = (factory, params1, params2) => {
-	const indicator1 = factory.calculate(params1).line;
-	const indicatorIMap1 = buildLineCandlesIntersectionMap(factory.candles, indicator1);
-	const eventsArray1 = calculatePositionEvents(factory.candles, indicatorIMap1);
-	const indicator2 = factory.calculate(params2).line;
-	const indicatorIMap2 = buildLineCandlesIntersectionMap(factory.candles, indicator2);
-	const eventsArray2 = calculatePositionEvents(factory.candles, indicatorIMap2);
+export const calculateTwoLineSeries = (factory1, factory2, params1, params2) => {
+	const indicator1 = factory1.calculate(params1).line;
+	const indicatorIMap1 = buildLineCandlesIntersectionMap(factory1.candles, indicator1);
+	const eventsArray1 = calculatePositionEvents(factory1.candles, indicatorIMap1);
+	const indicator2 = factory2.calculate(params2).line;
+	const indicatorIMap2 = buildLineCandlesIntersectionMap(factory2.candles, indicator2);
+	const eventsArray2 = calculatePositionEvents(factory2.candles, indicatorIMap2);
 	const openEvents = eventsArray1.filter(event =>
 		event.event !== TemplateEvents.SHORT_CLOSE && event.event !== TemplateEvents.LONG_CLOSE
 	)
@@ -82,11 +76,38 @@ export const calculateTwoLineSeries = (factory, params1, params2) => {
 }
 
 export const analyzeTwoLineSeries = async (candles, candlesParams: factoryParams) => {
+	const results = [];
 	const factories = await getFactories(candles, candlesParams);
-	const param1 = { average: Fibonacci.F233, field: Field.Close };
-	const param2 = { average: 50, field: Field.Close };
-	const eventsArray = calculateTwoLineSeries(factories.ema, param1, param2);
-	const winSeries = calculateWinSeries(eventsArray);
-	console.log(winSeries);
-	return winSeries
+	// for (let average1 of [89, 100, 130, 150, 200, 233, 250, 300]) {
+	// 	for (let average2 of [2, 3, 5, 10, 20, 50, 75]) {
+	// 		for (let field1 of Object.values(Field)) {
+	// 			for (let field2 of Object.values(Field)) {
+	// 				for (let factory1 of [factories.ema, factories.ma]) {
+	// 					for (let factory2 of [factories.ema, factories.ma]) {
+	// 						const param1 = { average: average1, field: field1 };
+	// 						const param2 = { average: average2, field: field2 };
+	for (let average1 of [89, 100, 144, 200, 233]) {
+		for (let average2 of [2, 3]) {
+			for (let field1 of Object.values(Field)) {
+				for (let field2 of [Field.High]) {
+					for (let factory1 of [factories.ema, factories.ma]) {
+						for (let factory2 of [factories.ema, factories.ma]) {
+							const param1 = { average: average1, field: field1 };
+							const param2 = { average: average2, field: field2 };
+							console.log(param1, param2, factory1.signature, factory2.signature)
+							const eventsArray = calculateTwoLineSeries(factory1, factory2, param1, param2);
+							const winSeries = calculateWinSeries(eventsArray);
+							const analyzed = calculatePositionsCount(winSeries, candles);
+							analyzed['signature'] = {
+								param1, param2, f1: factory1.signature, f2: factory2.signature
+							}
+							results.push(analyzed)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return results
 }
