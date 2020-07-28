@@ -1,5 +1,5 @@
 import { Field } from '../../constants';
-import { Period } from '../../period';
+import { Period } from '../../models/period';
 import { Indicator } from '../indicator';
 
 export type MovingAverageParams = {

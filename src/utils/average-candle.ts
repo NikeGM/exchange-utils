@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { Candle } from '../candle';
+import { Candle } from '../models/candle';
 
 export const averageCandle = (candles: Candle[])=> {
 	let sum = new Decimal(0);

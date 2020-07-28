@@ -1,7 +1,7 @@
-import { Candle } from '../candle';
+import { Candle } from '../models/candle';
 import { IntersectionMap, IntersectionType } from './line-candle-intersection-map';
-import { Window } from '../window';
-import { Position, PositionType } from '../position';
+import { Window } from '../models/window';
+import { Position, PositionType } from '../models/position';
 import Decimal from 'decimal.js';
 
 export enum TemplateEvents {
@@ -47,17 +47,21 @@ const defaultCriteria: criteriaType = {
 	openCriteria: {
 		long: {
 			isxTemplates: getAllCombinations(down, up, up),
+			// isxTemplates: getAllCombinations(down, up, up),
 		},
 		short: {
+			// isxTemplates: getAllCombinations(up, down, down),
 			isxTemplates: getAllCombinations(up, down, down),
 		}
 	},
 	closeCriteria: {
 		long: {
 			isxTemplates: getAllCombinations(up, down, down),
+			// isxTemplates: getAllCombinations(up, down, down),
 		},
 		short: {
 			isxTemplates: getAllCombinations(down, up, up),
+			// isxTemplates: getAllCombinations(down, up, up),
 		}
 	}
 }

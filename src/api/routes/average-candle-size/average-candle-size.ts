@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { asyncMiddleware } from '../../utils/async-middleware';
 import { IRoute } from '../../api';
 import { CandleDbRepository } from '../../../repositories/candle-repository';
-import Decimal from 'decimal.js';
 import { averageCandle } from '../../../utils/average-candle';
 
 const defaultParams = {

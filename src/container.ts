@@ -7,6 +7,8 @@ import { Api, RouteOptionsType } from './api/api';
 import { AverageCandleSizeRoute, UploadCandlesCsvRoute } from './api/routes';
 import { OrderSizeRoute } from './api/routes/order-size/order-size';
 import { StopLossSizeRoute } from './api/routes/stop-loss/stop-loss';
+import { Storage } from './cache/Storage';
+import { RedisStorage } from './cache/redis-storage';
 
 export type repositoriesType = {
 	candleDbRepository: CandleDbRepository;
@@ -18,6 +20,7 @@ export class Container {
 	private _repositories: repositoriesType;
 	private _api: Api;
 	private _routes: RouteOptionsType[];
+	private _storage: Storage;
 
 	get repositories(): repositoriesType {
 		if (!this._repositories) {
@@ -40,6 +43,13 @@ export class Container {
 			this._connection = knex(options);
 		}
 		return this._connection
+	}
+
+	get storage() {
+		if (!this._storage) {
+				this._storage = new RedisStorage({host: 'http://redis'});
+		}
+		return this._storage
 	}
 
 	get routes() {

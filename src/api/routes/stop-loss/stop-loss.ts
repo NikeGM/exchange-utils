@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { asyncMiddleware } from '../../utils/async-middleware';
 import { IRoute } from '../../api';
 import Decimal from 'decimal.js';
-import { getOrderSize, getStopResult, getStopSize } from '../../../utils/get-order-size';
+import { getStopResult, getStopSize } from '../../../utils/get-order-size';
 
 export type getStopLossParamsType = {
 	averageCandleSize: number;

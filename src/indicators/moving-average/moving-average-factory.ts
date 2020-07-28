@@ -1,8 +1,8 @@
 import { Decimal } from 'decimal.js';
 import { MovingAverageIndicator, MovingAverageParams } from './moving-average';
-import { Period } from '../../period';
-import { Candle } from '../../candle';
-import { Window } from '../../window';
+import { Period } from '../../models/period';
+import { Candle } from '../../models/candle';
+import { Window } from '../../models/window';
 import { factoryParams, IFactory } from '../factory';
 
 export type MovingAverageFactoryParams = {

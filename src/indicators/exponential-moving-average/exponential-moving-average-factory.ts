@@ -1,6 +1,6 @@
 import { Decimal } from 'decimal.js';
-import { Period } from '../../period';
-import { Candle } from '../../candle';
+import { Period } from '../../models/period';
+import { Candle } from '../../models/candle';
 import { ExponentialMovingAverageIndicator, ExponentialMovingAverageParams } from './exponential-moving-average';
 import { factoryParams, IFactory } from '../factory';
 

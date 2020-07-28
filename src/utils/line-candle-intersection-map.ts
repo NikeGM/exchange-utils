@@ -1,4 +1,4 @@
-import { Candle } from '../candle';
+import { Candle } from '../models/candle';
 import Decimal from 'decimal.js';
 
 export enum IntersectionType {

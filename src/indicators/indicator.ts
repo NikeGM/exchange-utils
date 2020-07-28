@@ -1,5 +1,5 @@
 import { Decimal } from 'decimal.js';
-import { Period } from '../period';
+import { Period } from '../models/period';
 import { Line } from '../utils/line-candle-intersection-map';
 
 

@@ -36,5 +36,16 @@ services:
       - 54321:5432
     networks:
       - exchange
+  redis:
+    image: "redis:alpine"
+    container_name: "redis"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - exchange
 volumes:
   postgres-data:

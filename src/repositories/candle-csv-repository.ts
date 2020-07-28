@@ -1,5 +1,5 @@
 'use strict';
-import { Candle } from '../candle';
+import { Candle } from '../models/candle';
 import { CandleDbRepository } from './candle-repository';
 
 export type loadCandlesType = {

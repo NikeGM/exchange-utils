@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { asyncMiddleware } from '../../utils/async-middleware';
 import { IRoute } from '../../api';
 import { repositoriesType } from '../../../container';
-import { Period } from '../../../period';
+import { Period } from '../../../models/period';
 
 export type uploadCandlesCsvType = {
 	file: string;

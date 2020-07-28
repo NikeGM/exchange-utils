@@ -1,5 +1,5 @@
-import { Candle } from '../candle';
-import { Period } from '../period';
+import { Candle } from '../models/candle';
+import { Period } from '../models/period';
 
 export type candleTypeKeys = {
 	code: string;

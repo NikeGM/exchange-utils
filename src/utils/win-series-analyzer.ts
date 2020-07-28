@@ -4,7 +4,7 @@ import { calculatePositionEvents, calculateWinSeries, TemplateEvents } from './w
 import { MovingAverageFactory } from '../indicators';
 import { ExponentialMovingAverageFactory } from '../indicators/exponential-moving-average/exponential-moving-average-factory';
 import { Fibonacci, Field } from '../constants';
-import { Candle } from '../candle';
+import { Candle } from '../models/candle';
 
 const getFactories = async (candles: Candle[], factoryParams: factoryParams) => {
 	return {
