@@ -2,7 +2,7 @@ export type StorageKey = Array<string|number>|string|number;
 
 export abstract class Storage {
 
-	public formKey(keys: StorageKey): string {
+	protected formKey(keys: StorageKey): string {
 		if (typeof keys === 'string' || typeof keys === 'number') return keys.toString();
 		return keys.join('__')
 	}

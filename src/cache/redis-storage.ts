@@ -10,7 +10,7 @@ export type RedisOptions = {
 }
 
 export class RedisStorage extends Storage {
-  private _client;
+  private readonly _client;
 
   constructor(options) {
     super();

@@ -1,5 +1,6 @@
 import { Candle } from '../models/candle';
 import { Period } from '../models/period';
+import { Storage } from '../cache/Storage';
 
 export type candleTypeKeys = {
 	code: string;
@@ -37,9 +38,11 @@ export class CandleDbRepository {
 	private _client;
 	private _table = 'candles';
 	private _batchSize = 5000;
+	private _cache: Storage;
 
-	constructor(client) {
+	constructor(client, cache: Storage) {
 		this._client = client;
+		this._cache = cache;
 	}
 
 	public async saveCandles(candles: Candle[]) {
@@ -68,6 +71,18 @@ export class CandleDbRepository {
 		return this._client.insert(prepared, ['id']).into(this._table).catch(console.log)
 		// return Promise.resolve([]);
 	};
+
+	public async getWithCache({code, period}): Promise<Candle[]> {
+		const key =`candles__${code}__${period}`;
+		const hasKey = await this._cache.has(key);
+		if (hasKey) {
+			const candles = await this._cache.get(key);
+			return candles as Candle[]
+		}
+		const candles = this.getCandles({code, period});
+		await this._cache.set(key, candles);
+		return candles;
+	}
 
 	public async getCandles(params: getCandlesType): Promise<Candle[]> {
 		const { from, to, period, name, code, limit, order } = params;

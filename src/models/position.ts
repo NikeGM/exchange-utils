@@ -25,6 +25,10 @@ export class Position {
 			new Decimal(this._size).mul(this._openPrice.minus(this._closePrice));
 	}
 
+	public get openPrice(): Decimal {
+		return this._openPrice;
+	}
+
 	public isClosed(): boolean {
 		return !!this._closePrice;
 	}

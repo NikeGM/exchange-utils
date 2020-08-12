@@ -24,7 +24,7 @@ export class Container {
 
 	get repositories(): repositoriesType {
 		if (!this._repositories) {
-			const candleDbRepository = new CandleDbRepository(this.dbClient);
+			const candleDbRepository = new CandleDbRepository(this.dbClient, this.storage);
 			const candleCsvRepository = new CandleCsvRepository(candleDbRepository);
 			this._repositories = {
 				candleCsvRepository,
