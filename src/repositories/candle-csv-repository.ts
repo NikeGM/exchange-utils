@@ -1,12 +1,43 @@
 'use strict';
-import { Candle } from '../models/candle';
 import { CandleDbRepository } from './candle-repository';
+import { uploadCandlesCsvType } from '../api/routes/upload-candles-csv/upload-candles-csv';
+import * as http from 'http';
+import { Period } from '../models/period';
 
-export type loadCandlesType = {
-	name: string;
+export type loadCandlesParams = {
+	start: number;
+	end: number;
 	code: string;
-	period: string;
-	file: string;
+	finamCode: number;
+	period: Period;
+}
+
+export type finamUrlParametersList = {
+	code: string;
+	e: string;
+	market: number;
+	em: number;
+	p: number;
+	dtf: number;
+	tmf: number;
+	MSOR: number;
+	mstimever: number;
+	sep: number;
+	sep2: number;
+	datf: number;
+	at: number;
+	df: number;
+	mf: number;
+	yf: number;
+	dt: number;
+	mt: number;
+	yt: number;
+	day_start: string;
+	month_start: string;
+	year_start: string;
+	day_end: string;
+	month_end: string
+	year_end: string
 }
 
 export class CandleCsvRepository {
@@ -16,55 +47,71 @@ export class CandleCsvRepository {
 		this._candleDbRepository = candleDbRepository;
 	}
 
-	public finamTxtToCandles(params: loadCandlesType): Candle[] {
-		const { code, name, period, file } = params;
-		const lines = file.split('\r\n').filter(line => !!line.trim());
-		lines.shift();
-		return lines.map(line => {
-			const parsed = line.split(',');
-			const date = this.formatFinamTime(parsed[0], parsed[1]);
-
-			return new Candle({
-				open: parsed[2],
-				high: parsed[3],
-				low: parsed[4],
-				close: parsed[5],
-				volume: parsed[6],
-				time: date.getTime(),
-				period,
-				code,
-				name
-			})
-		})
+	public loadFinamCandles(params: uploadCandlesCsvType) {
+		const finamUrlParameters = this.getLoadCandlesParams(params);
 	}
 
-	public csvToCandles(params: loadCandlesType): Candle[] {
-		const { code, name, period, file } = params;
-		const lines = file.split('\n').filter(line => !!line.trim());
-		return lines.map(line => {
-			const parsed = line.split(';');
-			const date = this.formatTimestamp(parsed[0]);
-
-			return new Candle({
-				open: parsed[1],
-				high: parsed[2],
-				low: parsed[3],
-				close: parsed[4],
-				volume: parsed[5],
-				time: date.getTime(),
-				period,
-				code,
-				name
-			})
-		})
+	private loadCandles(params): Promise<string> {
+			const {
+				code, e, market, em, p, yf, yt, month_start, day_start, month_end, day_end, dtf, tmf, MSOR, mstimever, sep, sep2,
+				datf, at, year_start, year_end, mf, mt, df, dt,
+			} = options;
+			http.get(
+				`http://export.finam.ru/${code}_${year_start}${month_start}${day_start}_${day_start}${month_end}${day_end}${e}?market=${market}&em=${em}&code=${code}&apply=0&df=${df}&mf=${mf}&yf=${yf}&from=${day_start}.${month_start}.${yf}&dt=${dt}&mt=${mt}&yt=${yt}&to=${day_end}.${month_end}.${yt}&p=${p}&f=${code}_${year_start}${month_start}${day_start}_${year_end}${month_end}${day_end}&e=${e}&cn=${code}&dtf=${dtf}&tmf=${tmf}&MSOR=${MSOR}&mstimever=${mstimever}&sep=${sep}&sep2=${sep2}&datf=${datf}&at=${at}`,
+				response => {
+					response.on('data', (chunk) => console.log(chunk.toString()));
+					response.on('end', () => console.log('end'));
+				}
+			)
 	}
 
-	private formatFinamTime(date: string, time: string): Date {
-		return new Date(`${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6,8)} ${time.slice(0, 2)}:${time.slice(2, 4)}:${time.slice(4, 6)}`)
+	private getLoadCandlesParams(params: loadCandlesParams): finamUrlParametersList {
+		const { start, end, code, period, finamCode } = params;
+		const dateStart = new Date(start);
+		const dateEnd = new Date(end);
+		const defaultOptions =
+			{
+				e: '.txt',
+				market: 1,
+				dtf: 4,
+				tmf: 3,
+				MSOR: 0,
+				mstimever: 0,
+				sep: 1,
+				sep2: 0,
+				datf: 1,
+				at: 0,
+				p: this.finamPeriodMap(period),
+				em: finamCode,
+			}
+		return {
+			...defaultOptions,
+			yf: dateStart.getFullYear(),
+			yt: dateEnd.getFullYear(),
+			mf: dateStart.getMonth(),
+			mt: dateEnd.getMonth(),
+			df: dateStart.getDate() - 1,
+			dt: dateEnd.getDate() - 1,
+			year_start: dateStart.getFullYear().toString().slice(2),
+			year_end: dateEnd.getFullYear().toString().slice(2),
+			month_start: (dateStart.getMonth() + 1).toString().padStart(2, '0'),
+			month_end: (dateEnd.getMonth() + 1).toString().padStart(2, '0'),
+			day_start: dateStart.getDate().toString().padStart(2, '0'),
+			day_end: dateEnd.getDate().toString().padStart(2, '0'),
+			code
+		}
 	}
 
-	private formatTimestamp(ts) {
-		const parsed = ts.split('.');
-		return (new Date(`${parsed[0]}.${parsed[1]}.${parsed[2]} ${parsed[3]}:${parsed[4]}:${parsed[5]}`));
+	private finamPeriodMap(period: Period) {
+		const map = {
+			M1: 1,
+			M5: 2,
+			M10: 3,
+			M15: 4,
+			M30: 5,
+			H1: 6,
+			D1: 7
+		}
+		return map[period.symbol];
 	}
 }

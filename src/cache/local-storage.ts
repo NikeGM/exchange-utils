@@ -1,10 +1,9 @@
-import { Storage, StorageKey } from './Storage';
+import { IStorage, StorageKey } from './Storage';
 
-export class LocalStorage extends Storage {
+export class LocalStorage implements IStorage {
   private readonly _storage;
 
   constructor() {
-    super();
     this._storage = {};
   }
 
@@ -25,6 +24,11 @@ export class LocalStorage extends Storage {
 
   async has(keys: StorageKey): Promise<boolean> {
       return !!this._storage[this.formKey(keys)];
+  }
+
+  private formKey(keys: StorageKey): string {
+    if (typeof keys === 'string' || typeof keys === 'number') return keys.toString();
+    return keys.join('__')
   }
 }
 

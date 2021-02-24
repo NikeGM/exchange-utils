@@ -7,7 +7,7 @@ import { Api, RouteOptionsType } from './api/api';
 import { AverageCandleSizeRoute, UploadCandlesCsvRoute } from './api/routes';
 import { OrderSizeRoute } from './api/routes/order-size/order-size';
 import { StopLossSizeRoute } from './api/routes/stop-loss/stop-loss';
-import { Storage } from './cache/Storage';
+import { IStorage } from './cache/Storage';
 import { RedisStorage } from './cache/redis-storage';
 
 export type repositoriesType = {
@@ -20,7 +20,7 @@ export class Container {
 	private _repositories: repositoriesType;
 	private _api: Api;
 	private _routes: RouteOptionsType[];
-	private _storage: Storage;
+	private _storage: IStorage;
 
 	get repositories(): repositoriesType {
 		if (!this._repositories) {
@@ -47,7 +47,7 @@ export class Container {
 
 	get storage() {
 		if (!this._storage) {
-				this._storage = new RedisStorage({host: 'http://redis'});
+			this._storage = new RedisStorage({host: 'redis'});
 		}
 		return this._storage
 	}

@@ -1,4 +1,4 @@
-import { Storage, StorageKey } from './Storage';
+import { IStorage, StorageKey } from './Storage';
 
 const redis = require('redis');
 const { promisify } = require('util');
@@ -9,11 +9,10 @@ export type RedisOptions = {
   port?: number;
 }
 
-export class RedisStorage extends Storage {
+export class RedisStorage implements IStorage {
   private readonly _client;
 
-  constructor(options) {
-    super();
+  constructor(options: RedisOptions) {
     this._client = redis.createClient(options);
   }
 
@@ -49,6 +48,9 @@ export class RedisStorage extends Storage {
   private get _existAsync() {
     return promisify(this._client.exists).bind(this._client);
   }
-}
 
-module.exports = RedisStorage;
+  private formKey(keys: StorageKey): string {
+    if (typeof keys === 'string' || typeof keys === 'number') return keys.toString();
+    return keys.join('__')
+  }
+}

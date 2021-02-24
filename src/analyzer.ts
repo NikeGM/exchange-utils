@@ -18,9 +18,10 @@ const getFactories = (candles: Candle[], params: factoryParams) => {
 	}
 }
 
-const run = async () => {
+export const run = async () => {
 	const paramsCandles = { code: 'GAZP', period: new Period('H1'), name: 'GAZP' };
 	const candles = await container.repositories.candleDbRepository.getWithCache(paramsCandles);
+	console.log(candles.length)
 	const factories = getFactories(candles, paramsCandles)
 	for (let field of Object.values(Field)) {
 		for (let average of Object.values(Fibonacci).filter(F => typeof F === 'number')) {
@@ -42,4 +43,4 @@ const run = async () => {
 	}
 }
 
-run().then()
+// run().then()

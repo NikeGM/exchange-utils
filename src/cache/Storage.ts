@@ -1,17 +1,12 @@
 export type StorageKey = Array<string|number>|string|number;
 
-export abstract class Storage {
+export interface IStorage {
+	
+	set(keys: StorageKey, value: object): Promise<boolean>
 
-	protected formKey(keys: StorageKey): string {
-		if (typeof keys === 'string' || typeof keys === 'number') return keys.toString();
-		return keys.join('__')
-	}
+	get(keys: StorageKey): Promise<object>
 
-	abstract async set(keys: StorageKey, value: object): Promise<boolean>
+	delete(keys: StorageKey): Promise<boolean>
 
-	abstract async get(keys: StorageKey): Promise<object>
-
-	abstract async delete(keys: StorageKey): Promise<boolean>
-
-	abstract async has(keys: StorageKey): Promise<boolean>
+	has(keys: StorageKey): Promise<boolean>
 }

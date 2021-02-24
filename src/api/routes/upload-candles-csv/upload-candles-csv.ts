@@ -5,11 +5,11 @@ import { repositoriesType } from '../../../container';
 import { Period } from '../../../models/period';
 
 export type uploadCandlesCsvType = {
-	file: string;
+	em: string;
 	period: string;
 	name: string;
 	code: string;
-	source?: string;
+	startTime: number;
 }
 
 
@@ -24,10 +24,9 @@ export class UploadCandlesCsvRoute implements IRoute {
 		this._route.post(
 			'/',
 			asyncMiddleware(async (req, res) => {
-				const { name, code, period, source } = req.query;
+				const { name, code, period, em, startTime } = req.query;
 				const params: uploadCandlesCsvType = {
-					file: req.files.upfile.data.toString(),
-					name, code, period, source
+					name, code, period, em, startTime
 				};
 				if (!period || !code) {
 					console.log('ERROR', params);
@@ -42,12 +41,7 @@ export class UploadCandlesCsvRoute implements IRoute {
 	}
 
 	public async controller(params: uploadCandlesCsvType): Promise<boolean> {
-		let candles;
-		if (params.source === 'finam') {
-			candles = this._repositories.candleCsvRepository.finamTxtToCandles(params)
-		} else {
-			candles = this._repositories.candleCsvRepository.csvToCandles(params);
-		}
+		const candles = await this._repositories.candleCsvRepository.loadFinamCandles(params)
 		await this._repositories.candleDbRepository.deleteCandleType(
 			{
 				period: new Period(params.period),

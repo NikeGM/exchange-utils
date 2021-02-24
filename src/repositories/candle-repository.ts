@@ -1,6 +1,6 @@
 import { Candle } from '../models/candle';
 import { Period } from '../models/period';
-import { Storage } from '../cache/Storage';
+import { IStorage } from '../cache/Storage';
 
 export type candleTypeKeys = {
 	code: string;
@@ -38,9 +38,9 @@ export class CandleDbRepository {
 	private _client;
 	private _table = 'candles';
 	private _batchSize = 5000;
-	private _cache: Storage;
+	private _cache: IStorage;
 
-	constructor(client, cache: Storage) {
+	constructor(client, cache: IStorage) {
 		this._client = client;
 		this._cache = cache;
 	}
